@@ -64,7 +64,7 @@ def getMessage():
 @server.route('/setwebhook', methods=['GET', 'POST'])
 def set_webhook():
     bot.remove_webhook()
-    s = bot.setWebhook('{URL}{HOOK}'.format(URL='https://boiling-island-24259.herokuapp.com/', HOOK=TOKEN))
+    s = bot.set_webhook('{URL}{HOOK}'.format(URL='https://boiling-island-24259.herokuapp.com/', HOOK=TOKEN))
     if s:
        return "webhook setup ok"
     else:
