@@ -7,34 +7,67 @@ import os
 TOKEN = "1615092091:AAGxLgfkhUpiinHyRe8s0Z-JnqqEJlNL9cA"
 bot = telebot.TeleBot(token=TOKEN)
 server = Flask(__name__)
+CHAT_ID = -542486020
+# USER_ID = 700...
+userids = set()
 
-
-def findat(msg):
-    # from a list of texts, it finds the one with the '@' sign
-    for i in msg:
-        if '@' in i:
-            return i
 
 @bot.message_handler(commands=['start']) # welcome message handler
 def send_welcome(message):
-    bot.reply_to(message, '(placeholder text)')
+    bot.reply_to(message, 'Hi, I will help you in posting your messages in confession@iitb group anonymously')
 
 @bot.message_handler(commands=['help']) # help message handler
 def send_welcome(message):
-    bot.reply_to(message, 'ALPHA = FEATURES MAY NOT WORK')
+    bot.reply_to(message, 'Send your message to be sent anonymously')
 
-@bot.message_handler(func=lambda msg: msg.text is not None and '@' in msg.text)
-# lambda function finds messages with the '@' sign in them
-# in case msg.text doesn't exist, the handler doesn't process it
-def at_converter(message):
-    texts = message.text.split()
-    at_text = findat(texts)
-    if at_text == '@': # in case it's just the '@', skip
-        pass
+@bot.message_handler(content_types=["new_chat_members"])
+def foo(message):
+    for user in message.new_chat_members:
+        userids.add(user.id)
+    bot.reply_to(message, "welcome")
+
+@bot.message_handler(content_types=["left_chat_member","kick_chat_member"])
+def foo(message):
+    # bot.reply_to(message, "Bye")
+    uid = message.left_chat_member.id
+    userids.remove(uid)
+    if uid in userids:
+        print("user not removed")
     else:
-        insta_link = "https://instagram.com/{}".format(at_text[1:])
-        bot.reply_to(message, insta_link)
+        print("user removed with id {}".format(uid))
 
+@bot.message_handler(func=lambda message: message.chat.type=="private")
+def echo_message(message):
+    userid = message.from_user.id
+    sub = False
+    if userid in userids:
+        # print("user not removed")
+        sub = True
+    else:
+        if is_subscribed(CHAT_ID,userid):
+            # print("user subscribed with id {}".format(userid))
+            userids.add(userid)
+            sub = True
+    if sub:
+        bot.send_message(CHAT_ID, message.text)
+    else:
+        bot.reply_to(message, 'Please subscribe to the channel')
+
+
+def is_subscribed(chat_id, user_id):
+    try:
+        var = bot.get_chat_member(chat_id, user_id)
+        if var.status == 'left':
+            return False
+        return True
+    except Exception as e:
+        if e.result_json['description'] == 'Bad Request: user not found':
+            bot.send_message(CHAT_ID, 'Please subscribe to the channel')
+            return False
+
+
+
+# bot.delete_webhook()
 # while True:
 #     try:
 #         bot.polling(none_stop=True)
@@ -42,24 +75,16 @@ def at_converter(message):
 #         # maybe there are others, therefore Exception
 #     except Exception:
 #         time.sleep(15)
+#         bot.stop_polling()
+#         bot.stop_bot()
 
-@bot.message_handler(func=lambda message: True, content_types=['text'])
-def echo_message(message):
-    bot.reply_to(message, message.text)
+
 
 
 @server.route('/{}'.format(TOKEN), methods=['POST'])
 def getMessage():
     bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
     return "!", 200
-
-
-# @server.route("/")
-# def webhook():
-#     bot.remove_webhook()
-#     bot.set_webhook(url='http://127.0.0.1:5000/' + TOKEN)
-#     print('web hook is set')
-#     return "!", 200
 
 @server.route('/setwebhook', methods=['GET', 'POST'])
 def set_webhook():
