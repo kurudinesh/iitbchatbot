@@ -4,10 +4,10 @@ from flask import Flask, request
 import os
 
 
-TOKEN = "1615092091:AAGxLgfkhUpiinHyRe8s0Z-JnqqEJlNL9cA"
+TOKEN = "1652615625:AAEnvDdQ0yNEZRnmMsJpRkA-IGyVP0UFfiY"
 bot = telebot.TeleBot(token=TOKEN)
 server = Flask(__name__)
-CHAT_ID = -542486020
+CHAT_ID = -545625132
 # USER_ID = 700...
 userids = set()
 
@@ -24,6 +24,7 @@ def send_welcome(message):
 def foo(message):
     for user in message.new_chat_members:
         userids.add(user.id)
+    print('new members added')
     bot.reply_to(message, "welcome")
 
 @bot.message_handler(content_types=["left_chat_member","kick_chat_member"])
@@ -77,10 +78,10 @@ def is_subscribed(chat_id, user_id):
 #         time.sleep(15)
 #         bot.stop_polling()
 #         bot.stop_bot()
-
-
-
-
+#
+#
+#
+#
 @server.route('/{}'.format(TOKEN), methods=['POST'])
 def getMessage():
     bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
