@@ -1,0 +1,5 @@
+runtime: python38
+entrypoint: gunicorn -b :$PORT bot:server
+runtime_config:
+  python_version: 3
+

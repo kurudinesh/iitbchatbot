@@ -90,7 +90,9 @@ def getMessage():
 @server.route('/setwebhook', methods=['GET', 'POST'])
 def set_webhook():
     bot.remove_webhook()
-    s = bot.set_webhook('{URL}{HOOK}'.format(URL='https://boiling-island-24259.herokuapp.com/', HOOK=TOKEN))
+    url = 'https://iitbchatbot.et.r.appspot.com/'
+    # url = 'https://boiling-island-24259.herokuapp.com/'
+    s = bot.set_webhook('{URL}{HOOK}'.format(URL=url, HOOK=TOKEN))
     if s:
        return "webhook setup ok"
     else:

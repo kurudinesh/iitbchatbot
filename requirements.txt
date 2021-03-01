@@ -1,4 +1,4 @@
-PyTelegramBotAPI==2.2.3
+PyTelegramBotAPI==3.7.6
 certifi==2018.11.29
 chardet==3.0.4
 Click==7.0
