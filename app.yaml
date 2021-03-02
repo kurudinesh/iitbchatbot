@@ -2,4 +2,10 @@ runtime: python38
 entrypoint: gunicorn -b :$PORT bot:server
 runtime_config:
   python_version: 3
+automatic_scaling:
+  target_cpu_utilization: 0.9
+  target_throughput_utilization: 0.9
+  min_instances: 1
+  max_instances: 1
+  max_concurrent_requests: 70
 

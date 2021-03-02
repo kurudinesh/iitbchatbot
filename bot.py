@@ -2,15 +2,22 @@ import time
 import telebot
 from flask import Flask, request
 import os
+import logging
 
 
 TOKEN = "1652615625:AAEnvDdQ0yNEZRnmMsJpRkA-IGyVP0UFfiY"
 bot = telebot.TeleBot(token=TOKEN)
 server = Flask(__name__)
 CHAT_ID = -545625132
-# USER_ID = 700...
+ADMIN_CHAT_ID = 275290631
+# USER_ID = 275290631
 userids = set()
+submsgsentids = set()
 
+server.logger.disabled = True
+logging.getLogger("requests").setLevel(logging.FATAL)
+logging.getLogger('werkzeug').disabled = True
+os.environ['WERKZEUG_RUN_MAIN'] = 'true'
 
 @bot.message_handler(commands=['start']) # welcome message handler
 def send_welcome(message):
@@ -39,21 +46,25 @@ def foo(message):
 
 @bot.message_handler(func=lambda message: message.chat.type=="private")
 def echo_message(message):
-    userid = message.from_user.id
-    sub = False
-    if userid in userids:
-        # print("user not removed")
-        sub = True
-    else:
-        if is_subscribed(CHAT_ID,userid):
-            # print("user subscribed with id {}".format(userid))
-            userids.add(userid)
+    try:
+        userid = message.from_user.id
+        sub = False
+        if userid in userids:
+            # print("user not removed")
             sub = True
-    if sub:
-        bot.send_message(CHAT_ID, message.text)
-    else:
-        bot.reply_to(message, 'Please subscribe to the channel')
-
+        else:
+            if is_subscribed(CHAT_ID,userid):
+                # print("user subscribed with id {}".format(userid))
+                userids.add(userid)
+                sub = True
+        if sub:
+            bot.send_message(CHAT_ID, message.text)
+            bot.forward_message(ADMIN_CHAT_ID, message.chat.id, message.message_id)
+        elif userid not in submsgsentids:
+            bot.reply_to(message, 'Please subscribe to the channel')
+            submsgsentids.add(userid)
+    except Exception as e:
+        print(e)
 
 def is_subscribed(chat_id, user_id):
     try:
