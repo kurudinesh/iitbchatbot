@@ -1,19 +1,28 @@
+pip freeze > requirements.txt
+
+
+gcloud app deploy
+
 gcloud app logs read
 
 gcloud app browse
 
-gcloud app deploy
 
 
-runtime: python38
-env: standard
-instance_class: F1
-handlers:
-  - url: .*
-    script: auto
-automatic_scaling:
-  min_idle_instances: automatic
-  max_idle_instances: automatic
-  min_pending_latency: automatic
-  max_pending_latency: automatic
-network: {}
+gcloud app describe
+
+gcloud sql connect iitchatbot --user=root
+
+authDomain: gmail.com
+codeBucket: staging.iitbchatbot.appspot.com
+databaseType: CLOUD_DATASTORE_COMPATIBILITY
+defaultBucket: iitbchatbot.appspot.com
+defaultHostname: iitbchatbot.et.r.appspot.com
+featureSettings:
+  splitHealthChecks: true
+  useContainerOptimizedOs: true
+gcrDomain: asia.gcr.io
+id: iitbchatbot
+locationId: asia-southeast2
+name: apps/iitbchatbot
+servingStatus: SERVING

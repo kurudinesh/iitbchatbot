@@ -1,4 +1,11 @@
 .idea
+__pycache__/*
 LICENSE
 README.md
 .gcloudignore
+/privatekey.priv
+/publickey.pub
+/cloud_sql_proxy.exe
+/app-config.properties
+/localtestcommands.txt
+app.yaml
