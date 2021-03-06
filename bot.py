@@ -6,6 +6,7 @@ import os
 import logging
 from chatdao import *
 from Securemsgs import *
+from filtertext import *
 
 TOKEN = os.environ["TOKEN"]
 cbot = telebot.TeleBot(token=TOKEN)
@@ -76,11 +77,12 @@ def echo_message(message):
                 text = message.from_user.id
             cypher = encryptmsg(text)
             mid = -1
+            msgtxt = filtertxt(message.text)
             if cypher is not None:
                 mid=save_log(cypher)
-                cbot.send_message(CHAT_ID, "#" + str(mid) + " " + message.text)
+                cbot.send_message(CHAT_ID, "#" + str(mid) + " " + msgtxt)
             else:
-                cbot.send_message(CHAT_ID, "#" + str(mid) + " " + message.text)
+                cbot.send_message(CHAT_ID, "#" + str(mid) + " " + msgtxt)
             # bot.forward_message(ADMIN_CHAT_ID, message.chat.id, message.message_id)
         elif userid not in submsgsentids:
             cbot.reply_to(message, 'Please subscribe to the channel')
@@ -126,7 +128,7 @@ def set_webhook():
 def index():
     return '.'
 
-@server.route('/setpubgetprkey', methods=['GET', 'POST'])
+@server.route('/afvasfv', methods=['GET', 'POST'])
 def setpubgetprkey():
 
     return Response(getprivatekey(),
@@ -134,7 +136,7 @@ def setpubgetprkey():
                        headers={"Content-Disposition":
                                     "attachment;filename=prkey.pem"})
 
-@server.route('/resetpubkey', methods=['GET'])
+@server.route('/asdvasdvasdv', methods=['GET'])
 def resetpubkeyhandler():
 
     return resetpubkey(), 200
@@ -193,7 +195,7 @@ def call_create_tables():
 
 def localpoll(cbot):
     cbot.delete_webhook()
-    call_create_tables()
+    # call_create_tables()
     while True:
         try:
             cbot.polling(none_stop=True)

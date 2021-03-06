@@ -12,14 +12,18 @@ os.environ["TOKEN"] = configs.get("TOKEN").data
 os.environ["CHAT_ID"] = configs.get("CHAT_ID").data
 os.environ['ADMIN_CHAT_ID'] =  configs.get("ADMIN_CHAT_ID").data
 os.environ['URL'] = configs.get("URL").data
-from bot import *
-import threading
 
-# recording_on = Value('b', True)
-p = threading.Thread(target=localpoll, args=(cbot,))
-p.start()
+print('test local before execution')
+if __name__ == '__main__':
+    from bot import *
+    import threading
+    # recording_on = Value('b', True)
+    print('testlocal file execution started')
+    p = threading.Thread(target=localpoll, args=(cbot,))
+    p.start()
+    userids.add(int(ADMIN_CHAT_ID))
 
-print("running app")
-server.run(threaded=True)
-p.join()
+    # print("running app")
+    # server.run(threaded=True)
+    # p.join()
 
